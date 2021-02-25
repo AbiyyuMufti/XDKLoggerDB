@@ -22,16 +22,22 @@ if __name__ == '__main__':
 
     while True:
         rxData, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        data = str(rxData, "utf-8")
-        incomingData = data.split(';')
-        print(incomingData)
-        try:
-            sensor = incomingData[0]
-            measurementTime = datetime.strptime(incomingData[1], "%Y-%m-%dT%H:%M:%SZ")
-            measurementData = incomingData[2:]
-        except ValueError:
-            print("ERROR: INVALID INCOMING BYTES")
-            continue
-        for q in Queues:
-            if sensor == q.Name:
-                q.input(measurementTime, measurementData)
+        dataset = str(rxData, "utf-8")
+
+        sensorsData = dataset.split('\t')
+
+        for data in sensorsData:
+            incomingData = data.split(';')
+            print(incomingData)
+
+            try:
+                sensor = incomingData[0]
+                measurementTime = datetime.strptime(incomingData[1], "%Y-%m-%dT%H:%M:%SZ")
+                measurementData = incomingData[2:]
+            except ValueError:
+                print("ERROR: INVALID INCOMING BYTES")
+                continue
+
+            for q in Queues:
+                if sensor == q.Name:
+                    q.input(measurementTime, measurementData)
