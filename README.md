@@ -2,7 +2,7 @@
 
 ## Description
 A python program that receives the measurement data from the XDKDataLogger and then store it inside a local database. The measurement data are received via UDP Protocol and the sqlite3 database is used.
-![image](https://github.com/AbiyyuMufti/XDKDataLogger/blob/master/images/XDKDataLoggerProgramOverview.png)
+![image](https://github.com/AbiyyuMufti/XDKDataLogger/blob/master/images/GlobalProgramFlow.png)
 
 This repository currenty existing of three python scripts:
 1. *createDB.py* is a script to create databse if none exists yet.
@@ -39,13 +39,13 @@ In the ```if __name__ == ‘__main__’:``` section, the DBManager thread is sta
 The data is separated first with tab then you got the multiple groups of sensor measurement and a timestamp. 
 The string that received should follow this convention:
 ```
-(timestamp)\t(sensor_data1)\t(sensor_data2)…(sensor_data6)
+(timestamp)\t(sensor_data_1)\t(sensor_data2)…(sensor_data_n)
 ```
-During the reading, sometimes the XDK is not sending all the sensor data at the same time as the example above. The XDK is also capable only sending 1 or multiple sensor data at different time. But because the convention is the same, then a simple for loop is enough to distribute the data into its own group.
+During the reading, XDK is allowed to send at the least 1 sensor data or more with maxsimum 6 sensor data at the same reading and some other sensor data at different time. The data can still be read and classified very easily, because the convention is the same. With only using simple for loop is enough to distribute the data into its own database table group.
 
 The data of sensor measurement is on the other hand separated with semicolon. This data containing the name of the sensor and its measurement value.
 The string of the sensor measurement should follow this convention:
 ```
-(name_sensor);(data_n); ..;(data_n)
+(name_sensor);(data_1); ..;(data_n)
 ```
 This information will be split and appended to the query using DBInsert object.
